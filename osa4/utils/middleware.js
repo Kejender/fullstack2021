@@ -17,7 +17,7 @@ const tokenExtractor = (request, response, next) => {
       next()
       return authorization.substring(7)
     }
-    return null
+    //return null
 
     next()
 }

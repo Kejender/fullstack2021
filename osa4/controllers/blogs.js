@@ -28,11 +28,11 @@ blogsRouter.get('/', async (request, response) => {
     const body = request.body
     const token = getTokenFrom(request)
     console.log("token")
-    const decodedToken = jwt.verify(token, process.env.SECRET)
-    //const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    //const decodedToken = jwt.verify(token, process.env.SECRET)
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
     console.log("verify")
-    if (!token || !decodedToken.id) {
-    //if (!request.token || !decodedToken.id) {
+    //if (!token || !decodedToken.id) {
+    if (!request.token || !decodedToken.id) {
       console.log("ei toimi")
       return response.status(401).json({ error: 'token missing or invalid' })
     }
