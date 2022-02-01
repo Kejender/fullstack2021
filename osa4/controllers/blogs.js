@@ -2,7 +2,7 @@ const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const logger = require('../utils/logger')
-const middleware = require('../utils/middleware')
+//const middleware = require('../utils/middleware')
 const jwt = require('jsonwebtoken')
 
 const getTokenFrom = request => {
@@ -29,8 +29,10 @@ blogsRouter.get('/', async (request, response) => {
     const token = getTokenFrom(request)
     console.log("token")
     const decodedToken = jwt.verify(token, process.env.SECRET)
+    //const decodedToken = jwt.verify(request.token, process.env.SECRET)
     console.log("verify")
     if (!token || !decodedToken.id) {
+    //if (!request.token || !decodedToken.id) {
       console.log("ei toimi")
       return response.status(401).json({ error: 'token missing or invalid' })
     }
@@ -69,6 +71,33 @@ blogsRouter.get('/', async (request, response) => {
   })
 
   blogsRouter.delete('/:id', async (request, response) => {
+
+    const body = request.body
+    const token = getTokenFrom(request)
+    console.log("token")
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    console.log("verify")
+    if (!token || !decodedToken.id) {
+      console.log("ei toimi")
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+    const user = await User.findById(decodedToken.id)
+    console.log("user", user)
+
+    console.log("bodyid", body.id, request.params.id)
+
+    const blog = await Blog.findById(request.params.id)
+    console.log("blog", blog.user.toString())
+
+    if (body.id === blog.user.toString()) {
+      console.log("samat")
+      await Blog.findByIdAndRemove(request.params.id)
+      response.status(204).end()
+    } else {
+      console.log("ei")
+      return response.status(401).json({ error: 'not found' })
+    }
+
     await Blog.findByIdAndRemove(request.params.id)
     response.status(204).end()
   })
