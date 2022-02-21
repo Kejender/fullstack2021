@@ -13,7 +13,7 @@ const requestLogger = (request, response, next) => {
 
 const tokenExtractor = (request, response, next) => {
   const authorization = request.get('authorization')
-  console.log("req", request)
+  //console.log("req", request)
     if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
       request.token = authorization.substring(7)
       console.log("token found in middleware", request.token)
@@ -30,7 +30,7 @@ const userExtractor = async (request, response, next) => {
     console.log("token found", request.token)
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
       if (decodedToken.id) {
-        console.log("id found")
+        console.log("id found", decodedToken.id)
         const user = await User.findById(decodedToken.id)
         console.log("user", user)
         request.user = user

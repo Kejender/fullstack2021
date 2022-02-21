@@ -23,17 +23,6 @@ blogsRouter.get('/', async (request, response) => {
     console.log("post")
     const body = request.body
     console.log("request user", request.user)
-    console.log("body", body)
-    //const decodedToken = jwt.verify(token, process.env.SECRET)
-    //const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    //if (!token || !decodedToken.id) {
-    //if (!request.token || !decodedToken.id) {
-    //  console.log("ei toimi")
-    //  return response.status(401).json({ error: 'token missing or invalid' })
-    //}
-    //const user = await User.findById(decodedToken.id)
-
-    console.log("blog user", request.user)
     const user = request.user
     const blog = new Blog({
       title: body.title,
@@ -43,7 +32,7 @@ blogsRouter.get('/', async (request, response) => {
       user: user._id
     })
 
-    if (!blog.title && !blog.url) {
+    if (!blog.title || !blog.url || blog.title.length < 0 || blog.url.length < 0) {
       console.log("no title or url")
       response.status(400).send({error: 'missing info'})
     }
@@ -63,7 +52,11 @@ blogsRouter.get('/', async (request, response) => {
 
   blogsRouter.delete('/:id', async (request, response) => {
     const body = request.body
+    console.log('DELETE')
+    console.log('req', request.user)
+    console.log('id',request.params.id)
     const blog = await Blog.findById(request.params.id)
+    console.log('blog',blog)
     console.log("blog", blog.user.toString(), request.user._id)
     //if (body.id === blog.user.toString()) {
     if (request.user._id.toString() === blog.user.toString()) {
