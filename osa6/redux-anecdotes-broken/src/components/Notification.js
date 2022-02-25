@@ -1,8 +1,11 @@
-import { useSelector } from 'react-redux'
-//import { Note } from '../reducers/anecdoteReducer'
+//import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { vote } from '../reducers/anecdoteReducer'
 
 const Notification = () => {
-  const notification = useSelector('note')
+  const dispatch = useDispatch()
+  dispatch(vote())
+  const notification = 'note'
   const style = {
     border: 'solid',
     padding: 10,
